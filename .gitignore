@@ -23,7 +23,12 @@ Pods/
 # Environment
 .env
 *.env.local
+.env.production
 配置信息.md
+
+# Local secrets (credentials, tokens)
+secrets/
+secrets/*.env
 
 # Logs
 *.log
