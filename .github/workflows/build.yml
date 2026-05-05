@@ -38,6 +38,7 @@ jobs:
       - name: Build project
         run: |
           cd apps/ios
+          rm -rf build
           xcodebuild \
             -workspace WhatToWear.xcworkspace \
             -scheme WhatToWear \
@@ -54,6 +55,8 @@ jobs:
           ls -la ./build/Build/Products/ || ls -la ./build/ || true
           echo "=== CHECKING FOR .app ==="
           find ./build -name "*.app" -type d 2>/dev/null || echo "No .app found"
+          echo "=== CONTENTS OF Debug-iphoneos ==="
+          ls -la ./build/Build/Products/Debug-iphoneos/ 2>/dev/null || echo "No Debug-iphoneos dir"
           if [ "$BUILD_RESULT" != "0" ]; then
             echo "=== BUILD FAILED, UPLOADING LOG ==="
             exit 1
