@@ -25,16 +25,21 @@ jobs:
           npm install -g xcodegen
           npx xcodegen generate
 
+      - name: Install CocoaPods
+        run: |
+          cd apps/ios
+          pod install
+
       - name: Build
         run: |
           cd apps/ios
-          xcodebuild -project WhatToWear.xcodeproj -scheme WhatToWear -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 15' build CODE_SIGNING_ALLOWED=NO
+          xcodebuild -workspace WhatToWear.xcworkspace -scheme WhatToWear -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 15' build CODE_SIGNING_ALLOWED=NO
 
       - name: Create IPA
         run: |
           cd apps/ios
           mkdir -p build output
-          xcodebuild -project WhatToWear.xcodeproj -scheme WhatToWear -configuration Debug -archivePath build/WhatToWear.xcarchive archive
+          xcodebuild -workspace WhatToWear.xcworkspace -scheme WhatToWear -configuration Debug -archivePath build/WhatToWear.xcarchive archive
           xcodebuild -exportArchive -archivePath build/WhatToWear.xcarchive -exportPath output -exportOptionsPlist exportOptions.plist CODE_SIGNING_ALLOWED=NO
 
       - name: Upload artifacts

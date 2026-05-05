@@ -14,20 +14,6 @@ settings:
     CODE_SIGN_STYLE: Automatic
     DEVELOPMENT_TEAM: ""
 
-packages:
-  SnapKit:
-    url: https://github.com/SnapKit/SnapKit.git
-    from: "5.7.0"
-  Alamofire:
-    url: https://github.com/Alamofire/Alamofire.git
-    from: "5.9.0"
-  Kingfisher:
-    url: https://github.com/onevcat/Kingfisher.git
-    from: "7.11.0"
-  Lottie:
-    url: https://github.com/airbnb/lottie-ios.git
-    from: "4.4.0"
-
 targets:
   WhatToWear:
     type: application
@@ -40,11 +26,6 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.wtw.app
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         GENERATE_INFOPLIST_FILE: false
-    dependencies:
-      - package: SnapKit
-      - package: Alamofire
-      - package: Kingfisher
-      - package: Lottie
     preBuildScripts: []
     postBuildScripts: []
 
