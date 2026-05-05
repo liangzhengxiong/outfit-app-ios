@@ -38,17 +38,21 @@ jobs:
       - name: Build project
         run: |
           cd apps/ios
+          xcodebuild clean -workspace WhatToWear.xcworkspace -scheme WhatToWear 2>/dev/null || true
           rm -rf build
           xcodebuild \
             -workspace WhatToWear.xcworkspace \
             -scheme WhatToWear \
             -configuration Debug \
             -destination 'generic/platform=iOS' \
-            -derivedDataPath ./build \
+            -derivedDataPath "$(pwd)/build" \
+            CONFIGURATION_BUILD_DIR="$(pwd)/build/Build/Products/Debug-iphoneos" \
+            BUILT_PRODUCTS_DIR="$(pwd)/build/Build/Products/Debug-iphoneos" \
             build \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO 2>&1 | tee build.log
+            CODE_SIGNING_REQUIRED=NO \
+            ONLY_ACTIVE_ARCH=NO 2>&1 | tee build.log
           BUILD_RESULT=${PIPESTATUS[0]}
           echo "=== BUILD EXIT CODE: $BUILD_RESULT ==="
           echo "=== BUILD COMPLETED, CHECKING OUTPUT ==="
