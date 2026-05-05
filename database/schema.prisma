@@ -1,0 +1,195 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum BodyType {
+  lean
+  standard
+  athletic
+  heavy
+}
+
+enum FitType {
+  slim
+  standard
+  loose
+  oversize
+}
+
+enum ClothType {
+  top
+  bottom
+  shoes
+  accessory
+}
+
+enum SubClothType {
+  tshirt
+  shirt
+  polo
+  sweater
+  jacket
+  coat
+  jeans
+  pants
+  shorts
+  sneakers
+  boots
+  leather_shoes
+  watch
+  bracelet
+  necklace
+  hat
+  belt
+}
+
+enum MemberLevel {
+  free
+  vip
+  svip
+}
+
+enum OutfitStyle {
+  korean
+  japanese
+  business
+  sweet_cool
+  vintage
+  minimalist
+  sporty
+}
+
+model User {
+  id           String   @id @default(cuid())
+  phone        String   @unique
+  wechatOpenid String?  @unique
+  nickname     String   @default("")
+  avatar       String   @default("")
+  height       Int?
+  weight       Int?
+  bodyType     BodyType @default(standard)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  clothes          Cloth[]
+  outfits          Outfit[]
+  bodyModel        BodyModel?
+  member           Member?
+  calendarRecords  CalendarRecord[]
+}
+
+model Cloth {
+  id           String       @id @default(cuid())
+  userId       String
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type         ClothType
+  subType      SubClothType
+  size          String       @default("M")
+  fit          FitType      @default(standard)
+  imageUrl     String
+  removedBgUrl String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  outfits OutfitCloth[]
+
+  @@index([userId])
+  @@index([type])
+}
+
+model Outfit {
+  id          String       @id @default(cuid())
+  userId      String
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  style       OutfitStyle
+  weather     String?
+  occasion    String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  clothes    OutfitCloth[]
+  calendarRecords CalendarRecord[]
+
+  @@index([userId])
+}
+
+model OutfitCloth {
+  id        String @id @default(cuid())
+  outfitId  String
+  outfit    Outfit @relation(fields: [outfitId], references: [id], onDelete: Cascade)
+  clothId   String
+  cloth     Cloth  @relation(fields: [clothId], references: [id], onDelete: Cascade)
+  position  Int    @default(0)
+
+  @@unique([outfitId, clothId])
+  @@index([outfitId])
+}
+
+model BodyModel {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String   @default("template")
+  height    Int?
+  weight    Int?
+  chest     Int?
+  waist     Int?
+  hip       Int?
+  modelId   String   @default("model-1")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Member {
+  id        String       @id @default(cuid())
+  userId    String       @unique
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  level     MemberLevel  @default(free)
+  expireAt  DateTime?
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+}
+
+model CalendarRecord {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  outfitId  String?
+  outfit    Outfit?  @relation(fields: [outfitId], references: [id], onDelete: SetNull)
+  date      DateTime
+  note      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([date])
+}
+
+model ClothingModel {
+  id        String   @id @default(cuid())
+  modelId   String   @unique
+  type      ClothType
+  subType   SubClothType?
+  modelUrl  String
+  anchorX   Float   @default(0.5)
+  anchorY   Float   @default(0.5)
+  scaleMin  Float   @default(0.8)
+  scaleMax  Float   @default(1.2)
+  createdAt DateTime @default(now())
+}
+
+model BodyModel3D {
+  id        String   @id @default(cuid())
+  modelId   String   @unique
+  heightRange String
+  bodyType   BodyType
+  modelUrl  String
+  anchorUrl String
+  createdAt DateTime @default(now())
+}

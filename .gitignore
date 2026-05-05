@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+services/api/node_modules/
+
+# Build outputs
+dist/
+build/
+
+# macOS
+.DS_Store
+
+# Xcode
+*.xcuserstate
+*.xcworkspace
+!*.xcworkspace
+xcuserdata/
+*.moved-aside
+DerivedData/
+
+# CocoaPods
+Pods/
+
+# Environment
+.env
+*.env.local
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.swp
+
+# iOS build
+*.ipa
+*.dSYM.zip
