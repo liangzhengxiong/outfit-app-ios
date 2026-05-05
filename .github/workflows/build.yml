@@ -39,28 +39,22 @@ jobs:
         run: |
           cd apps/ios
           xcodebuild clean -workspace WhatToWear.xcworkspace -scheme WhatToWear 2>/dev/null || true
-          rm -rf build
+          rm -rf build Payload output
           xcodebuild \
             -workspace WhatToWear.xcworkspace \
             -scheme WhatToWear \
             -configuration Debug \
             -destination 'generic/platform=iOS' \
-            -derivedDataPath "$(pwd)/build" \
-            CONFIGURATION_BUILD_DIR="$(pwd)/build/Build/Products/Debug-iphoneos" \
-            BUILT_PRODUCTS_DIR="$(pwd)/build/Build/Products/Debug-iphoneos" \
-            build \
+            -derivedDataPath ./build \
+            -archivePath ./build/WhatToWear.xcarchive \
+            archive \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            ONLY_ACTIVE_ARCH=NO 2>&1 | tee build.log
+            CODE_SIGNING_REQUIRED=NO 2>&1 | tee build.log
           BUILD_RESULT=${PIPESTATUS[0]}
           echo "=== BUILD EXIT CODE: $BUILD_RESULT ==="
-          echo "=== BUILD COMPLETED, CHECKING OUTPUT ==="
-          ls -la ./build/Build/Products/ || ls -la ./build/ || true
-          echo "=== CHECKING FOR .app ==="
-          find ./build -name "*.app" -type d 2>/dev/null || echo "No .app found"
-          echo "=== CONTENTS OF Debug-iphoneos ==="
-          ls -la ./build/Build/Products/Debug-iphoneos/ 2>/dev/null || echo "No Debug-iphoneos dir"
+          echo "=== CHECKING FOR .xcarchive ==="
+          find ./build -name "*.xcarchive" -type d 2>/dev/null || echo "No .xcarchive found"
           if [ "$BUILD_RESULT" != "0" ]; then
             echo "=== BUILD FAILED, UPLOADING LOG ==="
             exit 1
@@ -78,14 +72,18 @@ jobs:
         run: |
           cd apps/ios
           mkdir -p Payload output
-          echo "=== Looking for .app bundle ==="
-          APP_PATH=$(find ./build -name "*.app" -type d 2>/dev/null | head -1)
-          echo "Found app path: $APP_PATH"
+          echo "=== Looking for .app in xcarchive ==="
+          ARCHIVE_PATH=$(find ./build -name "*.xcarchive" -type d 2>/dev/null | head -1)
+          echo "Found archive: $ARCHIVE_PATH"
+          if [ -z "$ARCHIVE_PATH" ]; then
+            echo "ERROR: No .xcarchive found"
+            ls -la ./build/
+            exit 1
+          fi
+          APP_PATH=$(find "$ARCHIVE_PATH" -name "*.app" -type d 2>/dev/null | head -1)
+          echo "Found app: $APP_PATH"
           if [ -z "$APP_PATH" ]; then
-            echo "ERROR: No .app found in build directory"
-            echo "=== Checking build directory ==="
-            ls -la ./build/ 2>/dev/null || echo "build dir not found"
-            ls -la ./build/Build/Products/ 2>/dev/null || echo "Products dir not found"
+            echo "ERROR: No .app found in archive"
             exit 1
           fi
           cp -r "$APP_PATH" Payload/
