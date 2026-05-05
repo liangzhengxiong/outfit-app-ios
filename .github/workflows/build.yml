@@ -33,7 +33,7 @@ jobs:
       - name: Build
         run: |
           cd apps/ios
-          xcodebuild -workspace WhatToWear.xcworkspace -scheme WhatToWear -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 15' build CODE_SIGNING_ALLOWED=NO
+          xcodebuild -workspace WhatToWear.xcworkspace -scheme WhatToWear -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 15' build CODE_SIGNING_ALLOWED=NO 2>&1 | tee build.log
 
       - name: Create IPA
         run: |
@@ -54,4 +54,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-log
-          path: ~/Library/Logs/DiagnosticReports/
+          path: apps/ios/build.log
