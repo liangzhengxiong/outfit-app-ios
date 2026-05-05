@@ -2,9 +2,9 @@ name: Build iOS
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
-    branches: [master]
+    branches: [main]
 
 jobs:
   build:
@@ -14,19 +14,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: |
-          cd apps/ios
-          if [ -f Package.swift ]; then
-            swift package resolve
-          fi
-          if [ -f Podfile ]; then
-            pod install --repo-update
-          fi
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
       - name: Generate Xcode project
         run: |
           cd apps/ios
+          npm install -g xcodegen
           npx xcodegen generate
 
       - name: Build
@@ -37,10 +33,12 @@ jobs:
       - name: Create IPA
         run: |
           cd apps/ios
+          mkdir -p build output
           xcodebuild -project WhatToWear.xcodeproj -scheme WhatToWear -configuration Debug -archivePath build/WhatToWear.xcarchive archive
           xcodebuild -exportArchive -archivePath build/WhatToWear.xcarchive -exportPath output -exportOptionsPlist exportOptions.plist CODE_SIGNING_ALLOWED=NO
 
       - name: Upload artifacts
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: WhatToWear.ipa
