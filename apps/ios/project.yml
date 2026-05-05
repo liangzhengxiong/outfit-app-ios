@@ -13,6 +13,8 @@ settings:
     CURRENT_PROJECT_VERSION: "1"
     CODE_SIGN_STYLE: Automatic
     DEVELOPMENT_TEAM: ""
+    PRODUCT_NAME: WhatToWear
+    ALWAYS_SEARCH_USER_PATHS: NO
 
 targets:
   WhatToWear:
@@ -20,12 +22,16 @@ targets:
     platform: iOS
     sources:
       - path: WhatToWear
+        excludes:
+          - "**/.DS_Store"
     settings:
       base:
         INFOPLIST_FILE: WhatToWear/Info.plist
         PRODUCT_BUNDLE_IDENTIFIER: com.wtw.app
+        PRODUCT_NAME: WhatToWear
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         GENERATE_INFOPLIST_FILE: false
+        VALIDATE_PRODUCT: NO
     preBuildScripts: []
     postBuildScripts: []
 
