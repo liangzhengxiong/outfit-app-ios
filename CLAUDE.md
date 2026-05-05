@@ -131,7 +131,18 @@ what_to_ware/
 
 ## 构建与验证
 
-### 后端启动
+### GitHub Actions iOS构建（当前使用）
+```bash
+# 代码推送到 GitHub 后自动触发构建
+# 构建产物在 Actions -> Artifacts 下载 .ipa
+```
+
+### iOS 本地构建（需Mac）
+```bash
+cd apps/ios && npx xcodegen generate
+```
+
+### 后端启动（暂缓）
 ```bash
 cd services/api && npm install && npm run dev
 ```
@@ -187,6 +198,8 @@ cd services/api && npx prisma migrate dev # 执行迁移
 ## 开发进度
 
 详见 `开发进度报告.md`
+
+**当前阶段：** iOS 构建调试（GitHub Actions 云端构建）
 
 **当前状态：**
 - iOS: ~70% (核心UI完成，待XcodeGen生成项目)
