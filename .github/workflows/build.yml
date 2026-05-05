@@ -60,7 +60,14 @@ jobs:
         run: |
           cd apps/ios
           mkdir -p Payload output
-          cp -r ./build/Build/Products/Debug-iphonesimulator/*.app Payload/
+          APP_PATH=$(find ./build -name "*.app" -type d | head -1)
+          if [ -z "$APP_PATH" ]; then
+            echo "No .app found in build directory"
+            ls -la ./build/Build/Products/
+            exit 1
+          fi
+          echo "Found app: $APP_PATH"
+          cp -r "$APP_PATH" Payload/
           cd Payload
           zip -r ../output/app.ipa .
           cd ..
