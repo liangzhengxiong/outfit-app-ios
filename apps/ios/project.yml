@@ -2,7 +2,7 @@ name: WhatToWear
 options:
   bundleIdPrefix: com.wtw
   deploymentTarget:
-    iOS: "15.0"
+    iOS: "16.0"
   xcodeVersion: "15.0"
   createIntermediateGroups: true
 
@@ -15,6 +15,7 @@ settings:
     DEVELOPMENT_TEAM: ""
     PRODUCT_NAME: WhatToWear
     ALWAYS_SEARCH_USER_PATHS: NO
+    IPHONEOS_DEPLOYMENT_TARGET: "16.0"
 
 targets:
   WhatToWear:
