@@ -45,8 +45,11 @@ jobs:
             build \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            2>&1 | tee build.log
+            CODE_SIGNING_REQUIRED=NO 2>&1 | tee build.log || true
+          echo "=== BUILD OUTPUT STRUCTURE ==="
+          find ./build -type d -name "*.app" 2>/dev/null || echo "No .app found"
+          echo "=== DIRECTORY LISTING ==="
+          ls -laR ./build 2>/dev/null | head -50
 
       - name: Upload build log
         if: failure()
