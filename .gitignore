@@ -23,6 +23,7 @@ Pods/
 # Environment
 .env
 *.env.local
+配置信息.md
 
 # Logs
 *.log
